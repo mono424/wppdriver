@@ -8,3 +8,4 @@ environment:
 
 dev_dependencies:
   test: ^1.17.10
+  mockito: ^5.0.12
