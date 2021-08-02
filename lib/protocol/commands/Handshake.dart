@@ -24,8 +24,8 @@ class HandshakeAnswer extends Answer<HandshakeResponseData> {
   @override
   HandshakeResponseData process(String payload) {
     int protocolVersion = int.parse(payload[0] + payload[1], radix: 16);
-    String boardVersion = payload.substring(2, 10);
-    String serialNumber = payload.substring(10);
+    String boardVersion = payload.substring(2, 10).trim();
+    String serialNumber = payload.substring(10, payload.length - 1).trim();
     return HandshakeResponseData(protocolVersion, boardVersion, serialNumber);
   }
 }

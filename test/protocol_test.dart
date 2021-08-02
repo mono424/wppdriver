@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -10,18 +12,21 @@ class MockWPPCommunicationClient extends Mock implements WPPCommunicationClient 
 void main() {
   group('Handshake', () {
     
-    test('valid handshake request is sent by driver', () {
-      final client = MockWPPCommunicationClient();
-      when(client.receiveStream).thenAnswer((_) => new Stream.empty());
-
-      final message = [
-        ..."H0010023".codeUnits, 0xA
+    test('handshake response is parsed right', () async {
+      final handshakeResponse = [
+        ..."H101     1.2MY_SERIAL".codeUnits, 0xA
       ];
 
-      final driver = WPPDriver();
-      driver.init(client, 35);
+      final client = MockWPPCommunicationClient();
+      when(client.receiveStream).thenAnswer((_) => Stream.value(handshakeResponse));
+      when(client.send).thenAnswer((_) => (List<int> message) async {});
 
-      verify(client.send(message));
+      final driver = WPPDriver();
+      await driver.init(client, 35, initialDelay: Duration.zero);
+
+      verify(client.send).called(1);
+      expect(driver.deviceHandshake.boardSerial, "MY_SERIAL");
+      expect(driver.deviceHandshake.boardVersion, "1.2");
     });
 
     test('.trim() removes surrounding whitespace', () {

@@ -17,7 +17,7 @@ class WPPDriver {
   List<int> _buffer;
   HandshakeResponseData _deviceHandshakeData;
 
-  get deviceHandshake => _deviceHandshakeData;
+  HandshakeResponseData get deviceHandshake => _deviceHandshakeData;
 
   WPPDriver();
 
