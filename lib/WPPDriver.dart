@@ -1,8 +1,13 @@
 import 'dart:async';
 import 'package:wppdriver/WPPCommunicationClient.dart';
 import 'package:wppdriver/WPPMessage.dart';
+import 'package:wppdriver/protocol/commands/GameEnded.dart';
 import 'package:wppdriver/protocol/commands/Handshake.dart';
+import 'package:wppdriver/protocol/commands/NewGame.dart';
+import 'package:wppdriver/protocol/commands/NewMoveOnApp.dart';
 import 'package:wppdriver/protocol/commands/NewMoveOnBoard.dart';
+import 'package:wppdriver/protocol/model/GameEndType.dart';
+import 'package:wppdriver/protocol/model/GameType.dart';
 import 'package:wppdriver/protocol/model/HandshakeResponseData.dart';
 import 'package:wppdriver/protocol/model/RequestConfig.dart';
 
@@ -74,6 +79,18 @@ class WPPDriver {
 
   Future<HandshakeResponseData> _performHandshake(int appBuild, { RequestConfig config = const RequestConfig() }) {
     return Handshake(protocolVersion, appBuild).request(_client, _inputStream, config);
+  }
+
+  Future<void> newGame(GameType gameType, bool waitingForMove) {
+    return NewGame(gameType, waitingForMove).send(_client);
+  }
+
+  Future<void> gameEnded(GameEndType gameEndType) {
+    return GameEnded(gameEndType).send(_client);
+  }
+
+  Future<void> newMove(String pgn) {
+    return NewMoveOnApp(pgn).send(_client);
   }
 
 }
